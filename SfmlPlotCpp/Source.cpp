@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-    double width = 1628;
-    double height = 600;
+    double width = 1920;
+    double height = 1080;
     sf::ContextSettings settings;
 
     settings.antialiasingLevel = 8.0;
@@ -24,9 +24,6 @@ int main() {
 
     Graph graph(0, 0, width, height, 0.05, 0.05, numberPoints, font);
 
-    sf::RectangleShape shape(sf::Vector2f(10, 10));
-    shape.setPosition(sf::Vector2f(10, 10));
-
     bool condText = false;
     bool condTextA = false;
     bool condTextB = false;
@@ -34,10 +31,6 @@ int main() {
     std::string txtBox = "";
     std::string txtBoxA = "";
     std::string txtBoxB = "";
-
-    bool condElab = false;
-
-
 
     while (App.isOpen()) {
         sf::Event event;
@@ -65,7 +58,8 @@ int main() {
                 sent.setSize(width * 0.03, height * 0.03);
 
                 graph.setSize(width, height);
-                graph.replot();
+                if(!txtBox.empty())
+                    graph.replot();
 
                 sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
                 App.setView(sf::View(visibleArea));
@@ -137,7 +131,6 @@ int main() {
 
         App.clear();
         App.draw(graph);
-        App.draw(shape);
         App.draw(boxText);
         App.draw(boxA);
         App.draw(boxB);

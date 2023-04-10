@@ -8,6 +8,7 @@
 #include <stack>
 #include <algorithm>
 #include <string>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 
 struct coord{
@@ -23,4 +24,6 @@ struct point{
     bool visible;
 };
 
-double determineCoordInAxes(double number, double minInterval, double maxInterval, double length, bool xORy);
+double determineCoordInAxes(double, double, double, double, bool);
+
+std::string to_string_with_precision(double, const int);

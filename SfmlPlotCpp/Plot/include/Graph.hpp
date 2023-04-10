@@ -40,6 +40,8 @@ class Graph: public sf::Drawable, public sf::Transformable
 
         double radiusPoint = 1;
 
+        int fixedPrecision = 3;
+
         std::vector<coord> coords;
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const{ 
@@ -63,5 +65,6 @@ class Graph: public sf::Drawable, public sf::Transformable
         void setFunction(std::string, double, double);
         void setSize(float, float);
         void replot();
+        void setPrecisionDecimal(int);
 
 };

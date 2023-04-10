@@ -77,10 +77,10 @@ void Graph::plot(std::string _function, double minRange, double maxRange, sf::Co
     double segmentX = double(lengthWMX / counter);
 
     while (counter--) {
-        Bar tmpX(coordx, graphY + lengthY - 5, coordx, graphY + lengthY + 5, std::to_string(labelX), font, true, textSize);
+        Bar tmpX(coordx, graphY + lengthY - 5, coordx, graphY + lengthY + 5, to_string_with_precision(labelX, fixedPrecision), font, true, textSize);
         bars.push_back(tmpX);
         coordy = graphY + margin * lengthY + determineCoordInAxes(labelY, minIntervalY, maxIntervalY, lengthWMY, false);
-        Bar tmpY(graphX - 5, coordy, graphX + 5, coordy, std::to_string(labelY), font, true, textSize);
+        Bar tmpY(graphX - 5, coordy, graphX + 5, coordy, to_string_with_precision(labelY, fixedPrecision), font, true, textSize);
         bars.push_back(tmpY);
 
         labelY += segmentToAddY;
@@ -89,10 +89,10 @@ void Graph::plot(std::string _function, double minRange, double maxRange, sf::Co
         coordx += segmentX;
     }
 
-    Bar tmpX(coordx, graphY + lengthY - 5, coordx, graphY + lengthY + 5, std::to_string(labelX), font, true, textSize);
+    Bar tmpX(coordx, graphY + lengthY - 5, coordx, graphY + lengthY + 5, to_string_with_precision(labelX,fixedPrecision), font, true, textSize);
     bars.push_back(tmpX);
     coordy = graphY + margin * lengthY + determineCoordInAxes(labelY, minIntervalY, maxIntervalY, lengthWMY, false);
-    Bar tmpY(graphX - 5, coordy, graphX + 5, coordy, std::to_string(labelY), font, true, textSize);
+    Bar tmpY(graphX - 5, coordy, graphX + 5, coordy, to_string_with_precision(labelY, fixedPrecision), font, true, textSize);
     bars.push_back(tmpY);
 
 }
@@ -287,4 +287,8 @@ void Graph::replot() {
     bars.clear();
     points.clear();
     this->plot(function, minIntervalX, maxIntervalX);
+}
+
+void Graph::setPrecisionDecimal(int _precision) {
+    fixedPrecision = _precision;
 }

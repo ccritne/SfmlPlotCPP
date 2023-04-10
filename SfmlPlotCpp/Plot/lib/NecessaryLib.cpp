@@ -11,3 +11,10 @@ double determineCoordInAxes(double number, double minInterval, double maxInterva
 
 
 }
+
+std::string to_string_with_precision(double value, const int fixedPrecision = 3){
+    std::ostringstream out;
+    out.precision(fixedPrecision);
+    out << std::fixed << value;
+    return std::move(out).str();
+}
