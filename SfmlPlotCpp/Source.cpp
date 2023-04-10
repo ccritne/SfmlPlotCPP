@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-    double width = 1920;
-    double height = 1080;
+    double width = 800;
+    double height = 600;
     sf::ContextSettings settings;
 
     settings.antialiasingLevel = 8.0;
@@ -22,7 +22,7 @@ int main() {
     
     int numberPoints = 1000;
 
-    Graph graph(0, 0, width, height, 0.05, 0.05, numberPoints, font);
+    Graph graph(0, 0, width, height, 0.05, 0, numberPoints, font);
 
     bool condText = false;
     bool condTextA = false;
@@ -78,7 +78,6 @@ int main() {
             }
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                std::cout << "x:"<<sf::Mouse::getPosition(App).x << " y:" << sf::Mouse::getPosition(App).y << "\n";
 
                 if (boxText.contains(sf::Mouse::getPosition(App))) {
                     condText = true;
