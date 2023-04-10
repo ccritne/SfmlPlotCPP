@@ -1,9 +1,14 @@
 #include "../include/Graph.hpp"
 
-Graph::Graph(double xStart, double yStart, double xEnd, double yEnd, double _padding, double _margin, sf::Font& _font) {
+Graph::Graph(double _xStart, double _yStart, double _xEnd, double _yEnd, double _padding, double _margin, int numberPoints, sf::Font& _font) {
 
-    widthGraph = xEnd - xStart;
-    heightGraph = yEnd - yStart;
+    xStart = _xStart;
+    yStart = _yStart;
+
+    widthGraph = _xEnd - _xStart;
+    heightGraph = _yEnd - _yStart;
+
+    numberOfPoints = numberPoints;
 
     padding = _padding;
     margin = _margin;
@@ -29,13 +34,17 @@ Graph::Graph(double xStart, double yStart, double xEnd, double yEnd, double _pad
 
 }
 
-void Graph::plot(std::string function, double minRange, double maxRange, int numberPoints, sf::Color color = sf::Color::White) {
+void Graph::plot(std::string _function, double minRange, double maxRange, sf::Color color = sf::Color::White) {
 
-    double step = double(maxRange - minRange) / numberPoints;
+    function = _function;
+    // I calculate the i-th step
+    double step = double(maxRange - minRange) / numberOfPoints;
 
     double index = minRange;
 
-    for (int i = 0; i <= numberPoints; i++) {
+    // I evaluate function(index)
+
+    for (int i = 0; i <= numberOfPoints; i++) {
         double y = evaluate(change(function, index));
         if (!isinf(y)) {
             coords.push_back({ index, y });
@@ -45,6 +54,7 @@ void Graph::plot(std::string function, double minRange, double maxRange, int num
         index += step;
     }
 
+    // I create points 
 
     for (int i = 0; i < coords.size(); i++) {
         double x = graphX + margin * lengthX + determineCoordInAxes(coords[i].x, minIntervalX, maxIntervalX, lengthWMX, true);
@@ -53,7 +63,7 @@ void Graph::plot(std::string function, double minRange, double maxRange, int num
         points.push_back(p);
     }
 
-    int counter = std::min(15, numberPoints);
+    int counter = std::min(15, numberOfPoints);
 
     double segmentToAddY = double(maxIntervalY - minIntervalY) / counter;
     double labelY = minIntervalY;
@@ -240,7 +250,7 @@ void Graph::setRadiusPoint(double radius) {
     radiusPoint = radius;
 }
 
-void Graph::setFunction(std::string function, double a, double b, int numberPoints) {
+void Graph::setFunction(std::string function, double a, double b) {
     minIntervalX = a;
     maxIntervalX = b;
     minIntervalY = 0;
@@ -248,5 +258,33 @@ void Graph::setFunction(std::string function, double a, double b, int numberPoin
     coords.clear();
     bars.clear();
     points.clear();
-    this->plot(function, a, b, numberPoints);
+    this->plot(function, a, b);
+}
+
+void Graph::setSize(float width, float height) {
+    
+    widthGraph = width;
+    heightGraph = height;
+
+    graphX = xStart + padding * widthGraph;
+    graphY = yStart + padding * heightGraph;
+
+    lengthX = widthGraph - 2 * widthGraph * padding;
+    lengthY = heightGraph - 2 * heightGraph * padding;
+
+    lengthWMX = widthGraph * (1 - 2 * (padding + margin));
+    lengthWMY = heightGraph * (1 - 2 * (padding + margin));
+
+    AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
+
+    AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
+}
+
+void Graph::replot() {
+    minIntervalY = 0;
+    maxIntervalY = 0;
+    coords.clear();
+    bars.clear();
+    points.clear();
+    this->plot(function, minIntervalX, maxIntervalX);
 }

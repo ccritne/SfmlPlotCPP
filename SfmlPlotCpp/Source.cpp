@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-    double width = 1920;
-    double height = 1080;
+    double width = 1628;
+    double height = 600;
     sf::ContextSettings settings;
 
     settings.antialiasingLevel = 8.0;
@@ -14,12 +14,18 @@ int main() {
 
     sf::Font font;
     font.loadFromFile("arial.ttf");
-    Textbox boxText(width*0.36, height * 0.05, width*0.15, height * 0.03, font);
-    Textbox boxA(width*0.54, height * 0.05, width*0.05, height * 0.03, font);
-    Textbox boxB(width*0.6, height * 0.05, width*0.05, height * 0.03, font);
-    Button sent(width*0.67, height * 0.05, width*0.03, height*0.03, font);
+    Textbox boxText(width*0.35, height * 0.05, width*0.15, height * 0.03, font);
+    Textbox boxA(width*0.55, height * 0.05, width*0.05, height * 0.03, font);
+    Textbox boxB(width*0.65, height * 0.05, width*0.05, height * 0.03, font);
+    Button sent(width*0.75, height * 0.05, width*0.03, height*0.03, font);
     sent.setText("GO!");
-    Graph graph(0, 0, width, height, 0.1, 0.1, font);
+    
+    int numberPoints = 1000;
+
+    Graph graph(0, 0, width, height, 0.05, 0.05, numberPoints, font);
+
+    sf::RectangleShape shape(sf::Vector2f(10, 10));
+    shape.setPosition(sf::Vector2f(10, 10));
 
     bool condText = false;
     bool condTextA = false;
@@ -31,7 +37,7 @@ int main() {
 
     bool condElab = false;
 
-    int numberPoints = 1000;
+
 
     while (App.isOpen()) {
         sf::Event event;
@@ -40,6 +46,30 @@ int main() {
 
             if (event.type == sf::Event::Closed)
                 App.close();
+
+            if (event.type == sf::Event::Resized) {
+
+                width = static_cast<float>(event.size.width);
+                height = static_cast<float>(event.size.height);
+
+                boxText.setPosition(width * 0.35, height * 0.05);
+                boxText.setSize(width*0.15, height*0.03);
+
+                boxA.setPosition(width * 0.55, height * 0.05);
+                boxA.setSize(width * 0.05, height * 0.03);
+
+                boxB.setPosition(width * 0.65, height * 0.05);
+                boxB.setSize(width * 0.05, height * 0.03);
+
+                sent.setPosition(width * 0.75, height * 0.05);
+                sent.setSize(width * 0.03, height * 0.03);
+
+                graph.setSize(width, height);
+                graph.replot();
+
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                App.setView(sf::View(visibleArea));
+            }
 
             if (event.type == sf::Event::TextEntered and event.text.unicode != 8 and event.text.unicode != 13) {
                 if (condText) txtBox += static_cast<char>(event.text.unicode);
@@ -54,6 +84,8 @@ int main() {
             }
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                std::cout << "x:"<<sf::Mouse::getPosition(App).x << " y:" << sf::Mouse::getPosition(App).y << "\n";
+
                 if (boxText.contains(sf::Mouse::getPosition(App))) {
                     condText = true;
                     condTextA = false;
@@ -88,7 +120,7 @@ int main() {
                     if (txtBoxB[0] == '-')
                         endNumberString = txtBoxB.substr(1), multiplierB = -1;
 
-                    graph.setFunction(txtBox, stold(startNumberString) * multiplierA, stold(endNumberString) * multiplierB, numberPoints);
+                    graph.setFunction(txtBox, stold(startNumberString) * multiplierA, stold(endNumberString) * multiplierB);
 
                 }
             }
@@ -105,6 +137,7 @@ int main() {
 
         App.clear();
         App.draw(graph);
+        App.draw(shape);
         App.draw(boxText);
         App.draw(boxA);
         App.draw(boxB);

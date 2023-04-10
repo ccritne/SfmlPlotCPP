@@ -9,11 +9,15 @@
 class Graph: public sf::Drawable, public sf::Transformable
 {
     private:
+        int numberOfPoints = 100;
+
         double widthGraph, heightGraph;
         double graphX, graphY;
 
         Line AxesX;
         Line AxesY;
+
+        std::string function;
 
         double maxIntervalX, minIntervalX;
         double maxIntervalY, minIntervalY;
@@ -29,6 +33,8 @@ class Graph: public sf::Drawable, public sf::Transformable
 
         double lengthX, lengthWMX;
         double lengthY, lengthWMY;
+
+        double xStart, yStart;
 
         int textSize = 15;
 
@@ -49,11 +55,13 @@ class Graph: public sf::Drawable, public sf::Transformable
         
         }
     public:
-        Graph(double, double, double, double, double, double, sf::Font&);
-        void plot(std::string, double, double, int, sf::Color);
+        Graph(double, double, double, double, double, double, int, sf::Font&);
+        void plot(std::string, double, double, sf::Color);
         void setPoints(std::vector<point>, sf::Color);
         void addPoint(coord, sf::Color);
         void setRadiusPoint(double radius);
-        void setFunction(std::string, double, double, int);
+        void setFunction(std::string, double, double);
+        void setSize(float, float);
+        void replot();
 
 };
