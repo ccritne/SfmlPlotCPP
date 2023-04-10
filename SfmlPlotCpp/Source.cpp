@@ -22,7 +22,7 @@ int main() {
     
     int numberPoints = 1000;
 
-    Graph graph(0, 0, width, height, 0.05, 0, numberPoints, font);
+    Graph graph(width*0.05, height*0.1, width*0.9, height*0.8, 0, 0, numberPoints, font);
 
     bool condText = false;
     bool condTextA = false;
@@ -57,7 +57,7 @@ int main() {
                 sent.setPosition(width * 0.75, height * 0.05);
                 sent.setSize(width * 0.03, height * 0.03);
 
-                graph.setSize(width, height);
+                graph.reset(width * 0.05, height * 0.1, width * 0.9, height * 0.8);
                 if(!txtBox.empty())
                     graph.replot();
 

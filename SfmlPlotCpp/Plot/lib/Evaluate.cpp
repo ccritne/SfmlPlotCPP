@@ -129,8 +129,10 @@ std::vector<std::string> tokenization(std::string token){
                             tokens.push_back(tmp);
                         tokens.push_back(std::string(1, token[i]));
                         tmp = "";
-                    }else
-                        tmp += token[i];
+                    }
+                    else
+                            tmp += token[i];
+                    
                 }
                 else {
                     if(!tmp.empty()) 

@@ -64,7 +64,9 @@ class Graph: public sf::Drawable, public sf::Transformable
         void setRadiusPoint(double radius);
         void setFunction(std::string, double, double);
         void setSize(float, float);
+        void setPosition(float, float);
         void replot();
+        void reset(float, float, float, float);
         void setPrecisionDecimal(int);
 
 };

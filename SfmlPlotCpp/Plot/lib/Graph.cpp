@@ -1,12 +1,12 @@
 #include "../include/Graph.hpp"
 
-Graph::Graph(double _xStart, double _yStart, double _xEnd, double _yEnd, double _padding, double _margin, int numberPoints, sf::Font& _font) {
+Graph::Graph(double _xStart, double _yStart, double _width, double _height, double _padding, double _margin, int numberPoints, sf::Font& _font) {
 
     xStart = _xStart;
     yStart = _yStart;
 
-    widthGraph = _xEnd - _xStart;
-    heightGraph = _yEnd - _yStart;
+    widthGraph = _width;
+    heightGraph = _height;
 
     numberOfPoints = numberPoints;
 
@@ -261,6 +261,27 @@ void Graph::setFunction(std::string function, double a, double b) {
     this->plot(function, a, b);
 }
 
+void Graph::reset(float _xStart, float _yStart, float width, float height) {
+    xStart = _xStart;
+    yStart = _yStart;
+
+    widthGraph = width;
+    heightGraph = height;
+
+    graphX = xStart + padding * widthGraph;
+    graphY = yStart + padding * heightGraph;
+
+    lengthX = widthGraph - 2 * widthGraph * padding;
+    lengthY = heightGraph - 2 * heightGraph * padding;
+
+    lengthWMX = widthGraph * (1 - 2 * (padding + margin));
+    lengthWMY = heightGraph * (1 - 2 * (padding + margin));
+
+    AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
+
+    AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
+}
+
 void Graph::setSize(float width, float height) {
     
     widthGraph = width;
@@ -278,6 +299,26 @@ void Graph::setSize(float width, float height) {
     AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
 
     AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
+}
+
+void Graph::setPosition(float _xStart, float _yStart) {
+    
+    xStart = _xStart;
+    yStart = _yStart;
+
+    graphX = xStart + padding * widthGraph;
+    graphY = yStart + padding * heightGraph;
+
+    lengthX = widthGraph - 2 * widthGraph * padding;
+    lengthY = heightGraph - 2 * heightGraph * padding;
+
+    lengthWMX = widthGraph * (1 - 2 * (padding + margin));
+    lengthWMY = heightGraph * (1 - 2 * (padding + margin));
+
+    AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
+
+    AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
+
 }
 
 void Graph::replot() {
