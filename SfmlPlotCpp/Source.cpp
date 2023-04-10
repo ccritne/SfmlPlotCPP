@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-
     double width = 1920;
     double height = 1080;
     sf::ContextSettings settings;
@@ -20,8 +19,6 @@ int main() {
     Textbox boxB(width*0.6, height * 0.05, width*0.05, height * 0.03, font);
     Button sent(width*0.67, height * 0.05, width*0.03, height*0.03, font);
     sent.setText("GO!");
-
-    boxText.setText("");
     Graph graph(0, 0, width, height, 0.1, 0.1, font);
 
     bool condText = false;
@@ -34,7 +31,7 @@ int main() {
 
     bool condElab = false;
 
-    int numberPoints = 100;
+    int numberPoints = 1000;
 
     while (App.isOpen()) {
         sf::Event event;
@@ -80,8 +77,8 @@ int main() {
                     condTextA = false;
                     condTextB = false;
 
-                    int multiplierA = 1;
-                    int multiplierB = 1;
+                    double multiplierA = 1;
+                    double multiplierB = 1;
 
                     std::string startNumberString = txtBoxA;
                     std::string endNumberString = txtBoxB;
@@ -91,7 +88,7 @@ int main() {
                     if (txtBoxB[0] == '-')
                         endNumberString = txtBoxB.substr(1), multiplierB = -1;
 
-                    graph.setFunction(txtBox, evaluate(startNumberString) * multiplierA, evaluate(endNumberString) * multiplierB, numberPoints);
+                    graph.setFunction(txtBox, stold(startNumberString) * multiplierA, stold(endNumberString) * multiplierB, numberPoints);
 
                 }
             }
@@ -106,7 +103,6 @@ int main() {
         if (condTextB)
             boxB.setText(txtBoxB);
 
-
         App.clear();
         App.draw(graph);
         App.draw(boxText);
@@ -115,7 +111,6 @@ int main() {
         App.draw(sent);
         App.display();
     }
-
 
     return 0;
 }

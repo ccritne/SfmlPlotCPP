@@ -7,7 +7,6 @@
 #include <vector>
 #include <stack>
 #include <algorithm>
-#include <queue>
 #include <string>
 #include <SFML/Graphics.hpp>
 
@@ -23,4 +22,5 @@ struct point{
     double x, y;
     bool visible;
 };
+
 double determineCoordInAxes(double number, double minInterval, double maxInterval, double length, bool xORy);

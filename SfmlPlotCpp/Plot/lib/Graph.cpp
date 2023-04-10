@@ -1,13 +1,39 @@
 #include "../include/Graph.hpp"
 
+Graph::Graph(double xStart, double yStart, double xEnd, double yEnd, double _padding, double _margin, sf::Font& _font) {
+
+    widthGraph = xEnd - xStart;
+    heightGraph = yEnd - yStart;
+
+    padding = _padding;
+    margin = _margin;
+
+    graphX = xStart + padding * widthGraph;
+    graphY = yStart + padding * heightGraph;
+
+    lengthX = widthGraph - 2 * widthGraph * padding;
+    lengthY = heightGraph - 2 * heightGraph * padding;
+
+    lengthWMX = widthGraph * (1 - 2 * (padding + margin));
+    lengthWMY = heightGraph * (1 - 2 * (padding + margin));
+
+    AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
+
+    AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
+
+    maxIntervalX = 1;
+    minIntervalX = 1;
+
+    maxIntervalY = 1;
+    minIntervalY = 1;
+
+}
+
 void Graph::plot(std::string function, double minRange, double maxRange, int numberPoints, sf::Color color = sf::Color::White) {
 
-    double step = (maxRange - minRange) / numberPoints;
+    double step = double(maxRange - minRange) / numberPoints;
 
     double index = minRange;
-
-    minIntervalX = minRange;
-    maxIntervalX = maxRange;
 
     for (int i = 0; i <= numberPoints; i++) {
         double y = evaluate(change(function, index));
@@ -29,10 +55,10 @@ void Graph::plot(std::string function, double minRange, double maxRange, int num
 
     int counter = std::min(15, numberPoints);
 
-    double segmentToAddY = double((maxIntervalY - minIntervalY) / counter);
+    double segmentToAddY = double(maxIntervalY - minIntervalY) / counter;
     double labelY = minIntervalY;
 
-    double segmentToAddX = double((maxIntervalX - minIntervalX) / counter);
+    double segmentToAddX = double(maxIntervalX - minIntervalX) / counter;
     double labelX = minIntervalX;
 
     double coordx = graphX + margin * lengthX;
@@ -139,35 +165,6 @@ void Graph::setPoints(std::vector<point> pointsCoordinates, sf::Color color = sf
 
 }
 
-Graph::Graph(double xStart, double yStart, double xEnd, double yEnd, double _padding, double _margin, sf::Font& _font) {
-
-    widthGraph = xEnd - xStart;
-    heightGraph = yEnd - yStart;
-
-    padding = _padding;
-    margin = _margin;
-
-    graphX = xStart + padding * widthGraph;
-    graphY = yStart + padding * heightGraph;
-
-    lengthX = widthGraph - 2 * widthGraph * padding;
-    lengthY = heightGraph - 2 * heightGraph * padding;
-
-    lengthWMX = widthGraph * (1 - 2 * (padding + margin));
-    lengthWMY = heightGraph * (1 - 2 * (padding + margin));
-
-    AxesX.setPosition(graphX, graphY + lengthY, graphX + lengthX, graphY + lengthY);
-
-    AxesY.setPosition(graphX, graphY, graphX, graphY + lengthY);
-
-    maxIntervalX = 1;
-    minIntervalX = 1;
-
-    maxIntervalY = 1;
-    minIntervalY = 1;
-
-}
-
 void Graph::addPoint(coord p, sf::Color color = sf::Color::White) {
 
     bars.clear();
@@ -244,8 +241,12 @@ void Graph::setRadiusPoint(double radius) {
 }
 
 void Graph::setFunction(std::string function, double a, double b, int numberPoints) {
+    minIntervalX = a;
+    maxIntervalX = b;
+    minIntervalY = 0;
+    maxIntervalY = 0;
     coords.clear();
     bars.clear();
     points.clear();
-    plot(function, a, b, numberPoints);
+    this->plot(function, a, b, numberPoints);
 }

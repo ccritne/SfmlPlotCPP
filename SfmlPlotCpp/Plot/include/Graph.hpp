@@ -30,8 +30,6 @@ class Graph: public sf::Drawable, public sf::Transformable
         double lengthX, lengthWMX;
         double lengthY, lengthWMY;
 
-        double CoordLastBarX, CoordLastBarY;
-
         int textSize = 15;
 
         double radiusPoint = 1;

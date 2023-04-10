@@ -2,7 +2,7 @@
 
 std::vector<std::string> functions{ "sin", "cos", "tan", "cotan", "arcsin", "arccos", "arctan", "arccotan", "sqrt", "log_2", "ln", "log_3", "log_4", "log_5", "log_6", "log_7", "log_8", "log_9", "log", "abs" };
 
-bool isF(std::string op){
+bool isFunction(std::string op){
 
     if (std::find(functions.begin(), functions.end(), op) != functions.end())
         return true;
@@ -10,59 +10,81 @@ bool isF(std::string op){
     return false;
 }
 
-int prec(std::string c) 
-{ 
-    if(isF(c))
-        return 4;
-	if(c == "^") 
-	    return 3; 
-	
-    if(c == "*" || c == "/") 
-	    return 2; 
-	
-    if(c == "+" || c == "-") 
-	    return 1; 
+int precedenceOperators(char c)
+{
+    int precedence = -1;
+    switch (c) {
+        case '^': precedence = 3;
+        case '*': precedence = 2;
+        case '/': precedence = 2;
+        case '+': precedence = 1;
+        case '-': precedence = 1;
+    }
 
-	return -1; 
-} 
+    return precedence;
+}
 
-bool isO(std::string op){
-    return (prec(op) > 0 || isF(op))? true : false;
+int precedenceOperatorsAndFunctions(std::string c)
+{
+    return (isFunction(c)) ? 4 : precedenceOperators(c[0]);
+}
+
+bool isOperation(char op) {
+    return (precedenceOperators(op) > 0) ? true : false;
+}
+
+bool isOperation(std::string op) {
+    if (op.size() > 1)
+        return false;
+    else
+        return (precedenceOperators(op[0]) > 0) ? true : false;
+    
+    return true;
+}
+
+bool isBracket(char str) {
+    return (str == '(' or str == ')');
+}
+
+bool isBracket(std::string str) {
+    return (str == "(" or str == ")");
 }
 
 std::vector<std::string> infixToPostfix(std::vector<std::string> s) { 
+
 	std::stack<std::string> st;  
 	int l = s.size(); 
 	std::vector<std::string> ns; 
 	for(int i = 0; i < l; i++) 
 	{
-		if(isO(s[i]) == false && isF(s[i]) == false && s[i] != "(" && s[i] != ")") 
+		if(!isOperation(s[i]) and !isFunction(s[i]) and !isBracket(s[i]))
 		    ns.push_back(s[i]); 
-
 		else 
-            if(s[i] == "(") st.push("("); 
+            if(s[i] == "(") 
+               st.push("("); 
+		    else 
+                if(s[i] == ")"){
 
-		else if(s[i] == ")") 
-		{ 
-			while(!st.empty() && st.top() != "(") 
-			{  
-			    ns.push_back(st.top()); 
-				st.pop(); 
-			} 
-			if(st.top() == "(") 
-				st.pop(); 
-		} 
-		else{ 
-			while(!st.empty() && prec(s[i]) < prec(st.top())) 
-			{ 
-			    ns.push_back(st.top()); 
-				st.pop(); 
-			} 
+			        while(!st.empty() and st.top() != "(") 
+			        {  
+			            ns.push_back(st.top()); 
+				        st.pop(); 
+			        } 
+			        if(st.top() == "(") 
+				        st.pop(); 
+		        } 
+		        else{ 
+			        while(!st.empty() and precedenceOperatorsAndFunctions(s[i]) <= precedenceOperatorsAndFunctions(st.top()))
+			        { 
+			            ns.push_back(st.top()); 
+				        st.pop(); 
+			        } 
 
-			st.push(s[i]); 
-		} 
+			        st.push(s[i]); 
+		        } 
 
-	} 
+	}
+
 	while(!st.empty()) 
 	{ 
         ns.push_back(st.top()); 
@@ -94,47 +116,51 @@ bool is_number(std::string number_string)
 //TODO Refactor
 std::vector<std::string> tokenization(std::string token){
     std::string tmp = "";
-    std::vector<std::string> ret;
+
+    std::vector<std::string> tokens;
+
     for(int i = 0; i < token.size(); i++){
-        std::string x(1, token[i]) ;
-        if(x != " "){
-            if(isO(x) || x == "(" || x == ")" ){
-                    ret.push_back(tmp);
-                    ret.push_back(x);
+
+        if(token[i] != ' '){
+            if(isOperation(token[i]) or isBracket(token[i])) {
+                if (token[i] == '-' or token[i] == '+') { //I can write -2... or (-2... or +-2
+                    if (i > 0 and token[i - 1] != '(' and !isOperation(token[i-1])) {
+                        if (!tmp.empty()) 
+                            tokens.push_back(tmp);
+                        tokens.push_back(std::string(1, token[i]));
+                        tmp = "";
+                    }else
+                        tmp += token[i];
+                }
+                else {
+                    if(!tmp.empty()) 
+                        tokens.push_back(tmp);
+                    tokens.push_back(std::string(1, token[i]));
                     tmp = "";
+                }
             }
             else
-                tmp += x;
-        }else
-            continue;
+                tmp += token[i];
+        }
+
     }
 
     if(tmp.size() > 0)
-        ret.push_back(tmp);
+        tokens.push_back(tmp);
 
-    std::vector<std::string> retret;
-    for(auto x : ret)
-        if(x != "")
-            retret.push_back(x);
-
-    std::vector<std::string> newretret;
-    bool flag = false;
-    for(int i = 0; i < retret.size(); i++)
-        if(i > 0 && i + 1 < retret.size() && (isO(retret[i-1]) || retret[i-1] == "(") && retret[i] == "-" && is_number(retret[i+1]))
-            newretret.push_back("-" + retret[i+1]), i++;
-        else        
-            newretret.push_back(retret[i]);
-
-    return newretret;
+    return tokens;
 }
 
-double apply(double a, double b, std::string op){
+double apply(double a, double b, char op){
 
-    if(op == "+") return a + b;
-    if(op == "-") return a - b;
-    if(op == "*") return a * b;
-    if(op == "/") return a / b;
-    if(op == "^") return pow(a,b);
+    switch (op)
+    {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return a / b;
+        case '^': return pow(a, b);
+    }
 
     return 0;
 }
@@ -177,20 +203,23 @@ double evaluate(std::string expr){
 
     std::stack<double> values;
     for(int i = 0; i < post.size(); i++){
-        if(isF(post[i]) || isO(post[i])){
-            if(isF(post[i])){
+
+        if(isFunction(post[i])){
                 double value = values.top();
                 values.pop();
                 values.push(applyF(value, post[i]));
-            }else{
+        }
+        else {
+            if (isOperation(post[i])) {
                 double value1 = values.top();
                 values.pop();
                 double value2 = values.top();
                 values.pop();
-                values.push(apply(value2, value1, post[i]));
+                values.push(apply(value2, value1, post[i][0]));
             }
-        }else
-            values.push(stold(post[i]));
+            else
+                values.push(stold(post[i]));
+        }
     }
 
     return values.top();
